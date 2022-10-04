@@ -1,38 +1,143 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 1em;
+    font-family: sans-serif;
+}
+
 .App {
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 3em;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.header {
+    display: flex;
+    gap: 1em;
+    justify-content: space-between;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#header {
+    display: flex;
+    gap: 1em;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.login-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
 }
 
-.App-link {
-  color: #61dafb;
+.loading-div {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.profile-span {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: right;
+    gap: 1em;
+}
+
+.logout-btn {
+    flex: 0;
+}
+
+.login-form {
+    display: grid;
+    gap: 1em;
+    grid-auto-columns: max-content;
+}
+
+.login-form-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.user {
+    margin-bottom: 1em;
+}
+
+.avatar-app {
+    vertical-align: middle;
+    width: 3em !important;
+    height: 3em !important;
+    border-radius: 50%;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.photo-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    overflow-x: auto;
+}
+
+.date-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photos {
+    display: flex;
+}
+
+.photo {
+    cursor: pointer;
+    border-radius: 5%;
+}
+
+.react-code-input>* {
+    font-size: 16px !important;
+}
+
+.filter-div {
+    display: flex;
+    gap: 0.5em;
+}
+
+@media (max-width: 360px) {
+
+    .header,
+    .header>* {
+        flex-direction: column-reverse;
+    }
+
+    .profile-span {
+        justify-content: unset;
+        flex-wrap: wrap-reverse;
+    }
+
+    .logout-btn {
+        flex: 1;
+    }
+
+    .filter-div {
+        flex-direction: column;
+    }
 }
