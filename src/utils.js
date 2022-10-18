@@ -29,3 +29,5 @@ export const downloadImage = async (url) => {
         a.click();
     } catch (error) {}
 };
+
+export const isInteger = (val) => String(val).match(/\d+/);

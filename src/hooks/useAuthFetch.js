@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import AuthUserContext from '../context/AuthUserContext';
 import { fetchApi } from '../config';
-import { appToast } from '../utils';
+import { appToast, isInteger } from '../utils';
 
 export const useAuthFetch = () => {
     const [authUser, setAuthUser] = useContext(AuthUserContext);
@@ -15,6 +15,7 @@ export const useAuthFetch = () => {
 
             return (await response?.json()) ?? response;
         } catch (error) {
+            if (!isInteger(error?.message)) return;
             if (handleErrorStatus && error?.message == handleErrorStatus) return;
 
             if (!authUser) appToast('User not logged in!', 'error');
