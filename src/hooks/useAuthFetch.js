@@ -1,79 +1,60 @@
-import { useCallback, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import AuthUserContext from '../context/AuthUserContext';
 import { fetchApi } from '../config';
-import appToast from '../utils';
+import { appToast } from '../utils';
 
 export const useAuthFetch = () => {
     const [authUser, setAuthUser] = useContext(AuthUserContext);
+    const [cached, setCached] = useState(true);
 
-    const authFetchApi = useCallback(
-        async (url, options, handleErrorStatus = null) => {
-            try {
-                const response = await fetchApi(url, { ...options, credentials: 'include' });
-                if (!response.ok) throw new Error(response.status);
+    const authFetchApi = async (url, options, handleErrorStatus = null) => {
+        try {
+            const response = await fetchApi(url, { ...options, credentials: 'include' });
+            if (!response.ok) throw new Error(response.status);
 
-                return (await response?.json()) ?? response;
-            } catch (error) {
-                if (handleErrorStatus && error?.message == handleErrorStatus) return;
+            return (await response?.json()) ?? response;
+        } catch (error) {
+            if (handleErrorStatus && error?.message == handleErrorStatus) return;
 
-                if (!authUser) appToast('User not logged in!', 'error');
+            if (!authUser) appToast('User not logged in!', 'error');
 
-                setAuthUser(null);
-                const cookies = new Cookies();
-                cookies.remove('bereal-user-info');
-                cookies.remove('bereal-auth');
-            }
-        },
-        [authUser, setAuthUser]
-    );
+            setAuthUser(null);
+            const cookies = new Cookies();
+            cookies.remove('bereal-user-info');
+            cookies.remove('bereal-auth');
+        }
+    };
 
-    const fetchLatestPhotos = useCallback(
-        async (cached = false) => {
-            return await authFetchApi('/feed', {
+    const fetchLatestPhotos = async () => {
+        return await authFetchApi('/feed', {
+            cache: cached ? 'force-cache' : 'reload'
+        });
+    };
+
+    const fetchLatestPhotosByUsername = async (username) => {
+        return await authFetchApi(
+            `/user/${username}`,
+            {
                 cache: cached ? 'force-cache' : 'reload'
-            });
-        },
-        [authFetchApi]
-    );
+            },
+            404
+        );
+    };
 
-    const fetchLatestPhotosByUsername = useCallback(
-        async (username, cached = false) => {
-            return await authFetchApi(
-                `/user/${username}`,
-                {
-                    cache: cached ? 'force-cache' : 'reload'
-                },
-                404
-            );
-        },
-        [authFetchApi]
-    );
-
-    const logout = useCallback(async () => {
+    const logout = async () => {
         return await authFetchApi('/logout', {
             method: 'POST'
         });
-    }, [authFetchApi]);
-
-    const downloadImage = async (url) => {
-        try {
-            const response = await fetchApi(`/download?${new URLSearchParams({ url })}`);
-            if (!response.ok) throw new Error();
-
-            const data = await response.blob();
-
-            const a = document.createElement('a');
-            a.href = window.URL.createObjectURL(data);
-            a.download = `${url.match(/^.+\/(.+)\.\w+$/).pop()}.png`;
-            a.click();
-        } catch (error) {}
     };
+
+    useEffect(() => {
+        if (cached) setCached(false);
+    }, [cached]);
 
     return {
         fetchLatestPhotos,
         fetchLatestPhotosByUsername,
-        logout,
-        downloadImage
+        logout
     };
 };

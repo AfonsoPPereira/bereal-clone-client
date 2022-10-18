@@ -1,21 +1,16 @@
-import PropTypes from 'prop-types';
 import ReactCodeInput from 'react-code-input';
 import Button from '@mui/material/Button';
 import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import appToast from './utils';
+import { appToast } from './utils';
 import Cookies from 'universal-cookie';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Input } from '@mui/material';
 import { usePublicFetch } from './hooks/usePublicFetch';
 import AuthUserContext from './context/AuthUserContext';
 
-Login.propTypes = {
-    setFetchLatestContent: PropTypes.func.isRequired
-};
-
-export default function Login({ setFetchLatestContent }) {
+export default function Login() {
     const cookies = new Cookies();
     const { requestCode, login } = usePublicFetch();
     const [, setAuthUser] = useContext(AuthUserContext);
@@ -65,7 +60,6 @@ export default function Login({ setFetchLatestContent }) {
             await login(codeInput.current.state.value);
 
             setStage(0);
-            setFetchLatestContent({ cached: false });
 
             setAuthUser(cookies.get('bereal-user-info'));
 

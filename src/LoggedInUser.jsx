@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import ProfileHeader from './ProfileHeader';
-import appToast from './utils';
+import { appToast } from './utils';
 import { useContext } from 'react';
 import AuthUserContext from './context/AuthUserContext';
 import { useAuthFetch } from './hooks/useAuthFetch';

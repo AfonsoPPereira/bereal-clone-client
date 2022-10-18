@@ -3,20 +3,43 @@ import App from './App';
 import UserFromRoute from './UserFromRoute';
 import ErrorPage from './ErrorPage';
 import Feed from './Feed';
+import GuestRoute from './route/GuestRoute';
+import Login from './Login';
+import PrivateRoute from './route/PrivateRoute';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <App />,
-        errorElement: <ErrorPage />,
+        errorElement: (
+            <PrivateRoute>
+                <ErrorPage />
+            </PrivateRoute>
+        ),
         children: [
             {
-                path: '',
-                element: <Feed />
+                path: 'login',
+                element: (
+                    <GuestRoute>
+                        <div className="login-div">
+                            <Login />
+                        </div>
+                    </GuestRoute>
+                )
             },
             {
-                path: 'user/:username',
-                element: <UserFromRoute />
+                path: '',
+                element: <PrivateRoute />,
+                children: [
+                    {
+                        path: 'feed',
+                        element: <Feed />
+                    },
+                    {
+                        path: 'user/:username',
+                        element: <UserFromRoute />
+                    }
+                ]
             }
         ]
     }

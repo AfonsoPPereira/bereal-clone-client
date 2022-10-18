@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { DownloadSharp } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import { useAuthFetch } from '../hooks/useAuthFetch';
+import { downloadImage } from '../utils';
 
 DownloadImgButton.propTypes = {
     url: PropTypes.string,
@@ -9,8 +9,6 @@ DownloadImgButton.propTypes = {
 };
 
 export default function DownloadImgButton({ url, sx }) {
-    const { downloadImage } = useAuthFetch();
-
     if (!url) return null;
 
     return (

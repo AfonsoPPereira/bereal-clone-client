@@ -39,6 +39,10 @@ body {
     justify-content: center;
 }
 
+.logged-in-user-div:only-child {
+    flex: 1;
+}
+
 .profile-span {
     display: flex;
     flex-wrap: wrap;

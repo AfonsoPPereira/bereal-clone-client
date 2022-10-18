@@ -1,26 +1,45 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
-import Cookies from 'universal-cookie';
+import { Button } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import React from 'react';
+import { useState } from 'react';
+import { Link, useOutletContext, useParams } from 'react-router-dom';
+import RefreshLatestButton from './components/RefreshLatestButton';
+import Header from './Header';
 import { useAuthFetch } from './hooks/useAuthFetch';
+import LoadingContent from './LoadingContent';
 import User from './User';
 
 export default function UserFromRoute() {
     const { username } = useParams();
+    const { isHeader } = useOutletContext() || {};
     const { fetchLatestPhotosByUsername } = useAuthFetch();
-    const {
-        loading: [loading, setLoading],
-        fetchLatestContent: [fetchLatestContent]
-    } = useOutletContext();
-    const [user, setUser] = useState();
-    const cookies = useMemo(() => new Cookies(), []);
+    const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        setLoading(true);
+    const { isFetching, refetch } = useQuery(
+        ['fetchUser', username],
+        () => fetchLatestPhotosByUsername(username),
+        {
+            refetchOnWindowFocus: false,
+            onSuccess: setUser
+        }
+    );
 
-        fetchLatestPhotosByUsername(username, fetchLatestContent.cached)
-            .then((user) => setUser(user))
-            .finally(() => setLoading(false));
-    }, [fetchLatestContent, cookies, username, setLoading, fetchLatestPhotosByUsername]);
+    if (isHeader) {
+        return (
+            <Header isFetching={isFetching}>
+                <RefreshLatestButton fetchFunc={refetch} />
+                <Button size="small" variant="outlined" sx={{ width: 'fit-content' }}>
+                    <Link to="/feed" style={{ textDecoration: 'none' }}>
+                        Go Back to Feed
+                    </Link>
+                </Button>
+            </Header>
+        );
+    }
 
-    return !loading && <User user={user} />;
+    return (
+        <LoadingContent isFetching={isFetching}>
+            <User isFetching={isFetching} user={user} />
+        </LoadingContent>
+    );
 }
