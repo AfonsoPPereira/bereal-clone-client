@@ -9,7 +9,8 @@ User.propTypes = {
 };
 
 export default function User({ isFetching, user }) {
-    if (!isFetching && !user?.photos) return <h2>User not found</h2>;
+    if (!isFetching && !user) return <h2>User not found</h2>;
+    if (!isFetching && !user?.photos?.length) return <h2>User has no photos yet!</h2>;
 
     return (
         !!user && (
