@@ -3,7 +3,7 @@ import { CircularProgress } from '@mui/material';
 
 Header.propTypes = {
     isFetching: PropTypes.bool.isRequired,
-    children: PropTypes.node.isRequired
+    children: PropTypes.node
 };
 
 export default function Header({ isFetching, children }) {
