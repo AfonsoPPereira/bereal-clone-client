@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import AuthUserContext from '../context/AuthUserContext';
-import { fetchApi } from '../config';
 import { appToast, fetchAuthApi, isInteger } from '../utils';
 
 export const useAuthFetch = () => {
