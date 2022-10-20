@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import RefreshLatestButton from './components/RefreshLatestButton';
 import Header from './Header';
 import { useAuthFetch } from './hooks/useAuthFetch';
-import { useFeedChangedContent } from './hooks/useFeedChangedContent';
+import { isDataEqual } from './utils';
 import MainLayout from './layouts/MainLayout';
 import LoadingContent from './LoadingContent';
 import User from './User';
@@ -13,7 +13,6 @@ import User from './User';
 export default function UserFromRoute() {
     const { username } = useParams();
     const { fetchLatestPhotosByUsername } = useAuthFetch();
-    const { checkIfUpToDate } = useFeedChangedContent();
 
     const {
         data: user,
@@ -21,7 +20,7 @@ export default function UserFromRoute() {
         refetch
     } = useQuery(['fetchUser', username], () => fetchLatestPhotosByUsername(username), {
         refetchOnWindowFocus: false,
-        onSuccess: checkIfUpToDate
+        isDataEqual
     });
 
     return (

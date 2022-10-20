@@ -34,3 +34,13 @@ export const downloadImage = async (url) => {
 };
 
 export const isInteger = (val) => String(val).match(/\d+/);
+
+const getLatestTakenAt = (data) => (data?.[0] ?? data)?.photos?.[0]?.takenAt;
+
+export const isDataEqual = (oldData, newData) => {
+    if (!oldData || !newData) return;
+
+    if (getLatestTakenAt(oldData) === getLatestTakenAt(newData)) {
+        appToast('Up to date.');
+    }
+};

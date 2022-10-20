@@ -2,21 +2,24 @@ import User from './User';
 import { useAuthFetch } from './hooks/useAuthFetch';
 import { useQuery } from '@tanstack/react-query';
 import RefreshLatestButton from './components/RefreshLatestButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './Header';
 import LoadingContent from './LoadingContent';
 import FilterSection from './FilterSection';
 import MainLayout from './layouts/MainLayout';
-import { useFeedChangedContent } from './hooks/useFeedChangedContent';
+import { isDataEqual } from './utils';
 
 export default function Feed() {
     const { fetchLatestPhotos } = useAuthFetch();
-    const [users, setUsers] = useState([]);
-    const { checkIfUpToDate } = useFeedChangedContent();
+    const [users, setUsers] = useState(null);
 
-    const { data, isFetching, refetch } = useQuery(['feed'], fetchLatestPhotos, {
+    const {
+        data: allUsers,
+        isFetching,
+        refetch
+    } = useQuery(['feed'], fetchLatestPhotos, {
         refetchOnWindowFocus: false,
-        onSuccess: checkIfUpToDate
+        isDataEqual
     });
 
     return (
@@ -27,10 +30,12 @@ export default function Feed() {
                 </Header>
             }
         >
-            <FilterSection users={[data, setUsers]} />
+            <FilterSection users={[allUsers, setUsers]} />
             <LoadingContent isFetching={isFetching}>
-                {!isFetching && !users?.length && <h2>Empty Feed</h2>}
-                {!!users?.length && users.map((user) => <User key={user.id} user={user} />)}
+                {!isFetching && users !== null && !users?.length && <h2>Empty Feed</h2>}
+                {users?.map((user) => (
+                    <User key={user.id} user={user} />
+                ))}
             </LoadingContent>
         </MainLayout>
     );

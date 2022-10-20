@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Autocomplete, Button, TextField } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import useLocalStorage from './hooks/useLocalStorage';
+import useStorage from './hooks/useStorage';
 
 FilterSection.propTypes = {
     users: PropTypes.array.isRequired
@@ -10,7 +10,7 @@ FilterSection.propTypes = {
 export default function FilterSection({ users: [users, setUsers] }) {
     const [filter, setFilter] = useState(null);
     const [selectOpen, setSelectOpen] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useLocalStorage('filtered-users', []);
+    const [selectedOptions, setSelectedOptions] = useStorage('filtered-users', []);
     const usersFilterOptions = useMemo(
         () => (!users?.length ? [] : users.map((user) => user.username).sort()),
         [users]
@@ -22,7 +22,7 @@ export default function FilterSection({ users: [users, setUsers] }) {
         setUsers(
             users.filter(
                 (user) =>
-                    !!user.photos.length &&
+                    user.photos.length &&
                     (!selectedOptions?.length || selectedOptions.includes(user.username))
             )
         );

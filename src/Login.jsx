@@ -60,7 +60,6 @@ export default function Login() {
             await login(codeInput.current.state.value);
 
             setStage(0);
-
             setAuthUser(cookies.get('bereal-user-info'));
 
             appToast('User successfully logged in!');

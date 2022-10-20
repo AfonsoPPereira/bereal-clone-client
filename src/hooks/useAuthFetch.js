@@ -8,13 +8,21 @@ export const useAuthFetch = () => {
     const [cached, setCached] = useState(true);
 
     const authFetchApi = async (url, options, handleErrorStatus = null) => {
+        const cookies = new Cookies();
+
         try {
-            const response = await fetchAuthApi(url, options);
+            const response = await fetchAuthApi(
+                url +
+                    `?${new URLSearchParams({
+                        ts: cookies?.get('bereal-user-info')?.loggedInAt
+                    })}`,
+                options
+            );
             if (!response.ok) throw new Error(response.status);
 
-            return (await response?.json()) ?? response;
+            return await (response?.json() ?? response);
         } catch (error) {
-            if (!isInteger(error?.message)) {
+            if (!isInteger(error?.message) || error?.message >= 500) {
                 return appToast('Something went wrong', 'error');
             }
             if (handleErrorStatus && error?.message == handleErrorStatus) return;
@@ -22,7 +30,6 @@ export const useAuthFetch = () => {
             if (!authUser) appToast('Session expired', 'error');
 
             setAuthUser(null);
-            const cookies = new Cookies();
             cookies.remove('bereal-user-info');
             cookies.remove('bereal-auth');
         }
