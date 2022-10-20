@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { fetchApi } from './config';
 
 export function appToast(msg, type = 'success', options = {}) {
     return toast(msg, {
@@ -18,7 +19,9 @@ export function appToast(msg, type = 'success', options = {}) {
 
 export const downloadImage = async (url) => {
     try {
-        const response = await fetchApi(`/download?${new URLSearchParams({ url })}`);
+        const response = await fetchApi(`/download?${new URLSearchParams({ url })}`, {
+            credentials: 'include'
+        });
         if (!response.ok) throw new Error();
 
         const data = await response.blob();

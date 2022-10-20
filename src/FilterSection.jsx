@@ -1,40 +1,32 @@
 import PropTypes from 'prop-types';
-import { Button } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
+import useLocalStorage from './hooks/useLocalStorage';
 
 FilterSection.propTypes = {
-    isFetching: PropTypes.bool.isRequired,
     users: PropTypes.array.isRequired
 };
 
-export default function FilterSection({ isFetching, users: [users, setUsers] }) {
+export default function FilterSection({ users: [users, setUsers] }) {
     const [filter, setFilter] = useState(null);
-
-    const includeUsers = useMemo(
-        () => [
-            /* 'martaffaneves', 'mariaferreirapires', 'mafmafs', 'joanaqm' */
-        ],
-        []
-    );
-    const excludeUsers = useMemo(
-        () => [
-            /* 'afonsoppereira' */
-        ],
-        []
+    const [selectOpen, setSelectOpen] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useLocalStorage('filtered-users', []);
+    const usersFilterOptions = useMemo(
+        () => (!users?.length ? [] : users.map((user) => user.username).sort()),
+        [users]
     );
 
     useEffect(() => {
-        if (!users || !users.length) return;
+        if (!users?.length || selectOpen) return;
 
         setUsers(
             users.filter(
                 (user) =>
-                    !excludeUsers.includes(user.username) &&
-                    (!includeUsers.length || includeUsers.includes(user.username)) &&
-                    !!user.photos.length
+                    !!user.photos.length &&
+                    (!selectedOptions?.length || selectedOptions.includes(user.username))
             )
         );
-    }, [excludeUsers, includeUsers, setUsers, users]);
+    }, [selectedOptions, setUsers, users, selectOpen]);
 
     const sortByName = () => {
         setFilter('sortByName');
@@ -45,8 +37,6 @@ export default function FilterSection({ isFetching, users: [users, setUsers] }) 
     };
 
     useEffect(() => {
-        if (isFetching) return;
-
         switch (filter) {
         case 'sortByName':
             setUsers((users) =>
@@ -70,7 +60,7 @@ export default function FilterSection({ isFetching, users: [users, setUsers] }) 
             );
             break;
         }
-    }, [filter, isFetching, setUsers]);
+    }, [filter, setUsers]);
 
     return (
         <div className="filter-div">
@@ -80,6 +70,18 @@ export default function FilterSection({ isFetching, users: [users, setUsers] }) 
             <Button variant="outlined" onClick={sortByLatestDate}>
                 Sort By Latest Date
             </Button>
+            <Autocomplete
+                multiple
+                disableCloseOnSelect
+                onOpen={() => setSelectOpen(true)}
+                onClose={() => setSelectOpen(false)}
+                limitTags={2}
+                sx={{ minWidth: 150 }}
+                options={usersFilterOptions}
+                renderInput={(params) => <TextField {...params} label="Filter Users" />}
+                value={selectedOptions}
+                onChange={(event, value) => setSelectedOptions(value)}
+            />
         </div>
     );
 }

@@ -27,9 +27,10 @@ export default function Feed() {
                 </Header>
             }
         >
-            <FilterSection isFetching={isFetching} users={[data, setUsers]} />
+            <FilterSection users={[data, setUsers]} />
             <LoadingContent isFetching={isFetching}>
-                {!!users.length && users.map((user) => <User key={user.id} user={user} />)}
+                {!isFetching && !users?.length && <h2>Empty Feed</h2>}
+                {!!users?.length && users.map((user) => <User key={user.id} user={user} />)}
             </LoadingContent>
         </MainLayout>
     );

@@ -10,13 +10,15 @@ User.propTypes = {
 
 export default function User({ isFetching, user }) {
     if (!isFetching && !user) return <h2>User not found</h2>;
-    if (!isFetching && !user?.photos?.length) return <h2>User has no photos yet!</h2>;
 
     return (
         !!user && (
             <div className="user">
                 <ProfileHeader user={user} />
-                <Gallery photos={user.photos} />
+                {!user?.photos?.length && (
+                    <h2 style={{ marginTop: '2em' }}>User has no photos yet</h2>
+                )}
+                {!!user?.photos?.length && <Gallery photos={user.photos} />}
             </div>
         )
     );

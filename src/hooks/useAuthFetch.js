@@ -15,10 +15,12 @@ export const useAuthFetch = () => {
 
             return (await response?.json()) ?? response;
         } catch (error) {
-            if (!isInteger(error?.message)) return;
+            if (!isInteger(error?.message)) {
+                return appToast('Something went wrong', 'error');
+            }
             if (handleErrorStatus && error?.message == handleErrorStatus) return;
 
-            if (!authUser) appToast('User not logged in!', 'error');
+            if (!authUser) appToast('Session expired', 'error');
 
             setAuthUser(null);
             const cookies = new Cookies();
