@@ -76,7 +76,7 @@ export default function FilterSection({ users: [users, setUsers] }) {
                 onOpen={() => setSelectOpen(true)}
                 onClose={() => setSelectOpen(false)}
                 limitTags={2}
-                sx={{ minWidth: 150 }}
+                sx={{ minWidth: 200 }}
                 options={usersFilterOptions}
                 renderInput={(params) => <TextField {...params} label="Filter Users" />}
                 value={selectedOptions}
