@@ -17,11 +17,11 @@ export function appToast(msg, type = 'success', options = {}) {
     });
 }
 
+export const fetchAuthApi = (url, options) => fetchApi(url, { ...options, credentials: 'include' });
+
 export const downloadImage = async (url) => {
     try {
-        const response = await fetchApi(`/download?${new URLSearchParams({ url })}`, {
-            credentials: 'include'
-        });
+        const response = await fetchAuthApi(`/download?${new URLSearchParams({ url })}`);
         if (!response.ok) throw new Error();
 
         const data = await response.blob();

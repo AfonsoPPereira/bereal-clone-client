@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import AuthUserContext from '../context/AuthUserContext';
 import { fetchApi } from '../config';
-import { appToast, isInteger } from '../utils';
+import { appToast, fetchAuthApi, isInteger } from '../utils';
 
 export const useAuthFetch = () => {
     const [authUser, setAuthUser] = useContext(AuthUserContext);
@@ -10,7 +10,7 @@ export const useAuthFetch = () => {
 
     const authFetchApi = async (url, options, handleErrorStatus = null) => {
         try {
-            const response = await fetchApi(url, { ...options, credentials: 'include' });
+            const response = await fetchAuthApi(url, options);
             if (!response.ok) throw new Error(response.status);
 
             return (await response?.json()) ?? response;
