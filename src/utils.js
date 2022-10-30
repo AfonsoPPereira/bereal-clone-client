@@ -40,7 +40,10 @@ const getLatestTakenAt = (data) => (data?.[0] ?? data)?.photos?.[0]?.takenAt;
 export const isDataEqual = (oldData, newData) => {
     if (!oldData || !newData) return;
 
-    if (getLatestTakenAt(oldData) === getLatestTakenAt(newData)) {
+    const lastTakenAtOld = getLatestTakenAt(oldData);
+    const lastTakenAtNew = getLatestTakenAt(newData);
+
+    if (lastTakenAtOld && lastTakenAtOld === lastTakenAtNew) {
         appToast('Up to date.');
     }
 };

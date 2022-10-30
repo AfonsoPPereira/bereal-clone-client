@@ -33,11 +33,11 @@ export default function Gallery({ photos }) {
 
     useEffect(() => {
         if (modal.open && photos.some((e) => e.id === modal.photoId)) {
-            setModal((prevState) => ({
-                ...prevState,
+            setModal((state) => ({
+                ...state,
                 loading: false,
                 items,
-                startIndex: items.findIndex((e) => e.original === prevState.photoUrl)
+                startIndex: items.findIndex((e) => e.original === state.photoUrl)
             }));
         }
     }, [items, modal.open, modal.photoId, photos, setModal]);

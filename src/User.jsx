@@ -12,7 +12,7 @@ export default function User({ isFetching, user }) {
     if (!isFetching && !user) return <h2>User not found</h2>;
 
     return (
-        !!user && (
+        typeof user === 'object' && (
             <div className="user">
                 <ProfileHeader user={user} />
                 {!user?.photos?.length && (

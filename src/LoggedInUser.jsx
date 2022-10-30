@@ -6,15 +6,12 @@ import AuthUserContext from './context/AuthUserContext';
 import { useAuthFetch } from './hooks/useAuthFetch';
 
 export default function LoggedInUser() {
-    const { logout } = useAuthFetch();
+    useAuthFetch();
     const [authUser, setAuthUser] = useContext(AuthUserContext);
 
     const handleLogout = async () => {
-        try {
-            await logout();
-            setAuthUser(null);
-            appToast('User logged out', 'info');
-        } catch (error) {}
+        setAuthUser(null);
+        appToast('User logged out', 'info');
     };
 
     return (

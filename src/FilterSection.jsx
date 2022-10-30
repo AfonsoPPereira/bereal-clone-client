@@ -12,12 +12,12 @@ export default function FilterSection({ users: [users, setUsers] }) {
     const [selectOpen, setSelectOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useStorage('filtered-users', []);
     const usersFilterOptions = useMemo(
-        () => (!users?.length ? [] : users.map((user) => user.username).sort()),
+        () => (Array.isArray(users) ? users?.map((user) => user.username)?.sort() : []),
         [users]
     );
 
     useEffect(() => {
-        if (!users?.length || selectOpen) return;
+        if (selectOpen || !Array.isArray(users)) return;
 
         setUsers(
             users.filter(

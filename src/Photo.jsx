@@ -20,13 +20,14 @@ export default function Photo({ url, photo }) {
             alt={photo.caption}
             threshold={0.2}
             onClick={() =>
-                setModal({
-                    ...modal,
+                setModal((state) => ({
+                    ...state,
                     open: true,
                     loading: true,
                     photoId: photo.id,
-                    photoUrl: url
-                })
+                    photoUrl: url,
+                    currImgUrl: url
+                }))
             }
         />
     );

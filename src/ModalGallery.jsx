@@ -24,16 +24,11 @@ export default function ModalGallery({ children }) {
     return (
         <Modal
             open={modal.open}
-            onClose={() => setModal({ ...modal, open: false, loading: false })}
+            onClose={() => setModal((state) => ({ ...state, open: false, loading: false }))}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
             <Box sx={style} border="none">
-                {modal.loading && (
-                    <div className="loading-div">
-                        <CircularProgress />
-                    </div>
-                )}
                 {!modal.loading && children}
             </Box>
         </Modal>

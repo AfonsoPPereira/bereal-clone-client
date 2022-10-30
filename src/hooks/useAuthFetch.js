@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import Cookies from 'universal-cookie';
 import AuthUserContext from '../context/AuthUserContext';
 import { appToast, fetchAuthApi, isInteger } from '../utils';
@@ -6,10 +6,9 @@ import { appToast, fetchAuthApi, isInteger } from '../utils';
 export const useAuthFetch = () => {
     const [authUser, setAuthUser] = useContext(AuthUserContext);
     const [cached, setCached] = useState(true);
+    const cookies = useMemo(() => new Cookies(), []);
 
     const authFetchApi = async (url, options, handleErrorStatus = null) => {
-        const cookies = new Cookies();
-
         try {
             const response = await fetchAuthApi(
                 url +
@@ -25,20 +24,24 @@ export const useAuthFetch = () => {
             if (!isInteger(error?.message) || error?.message >= 500) {
                 return appToast('Something went wrong', 'error');
             }
-            if (handleErrorStatus && error?.message == handleErrorStatus) return;
+            if (handleErrorStatus && handleErrorStatus.hasOwnProperty(error?.message)) {
+                return handleErrorStatus[error.message]() ?? null;
+            }
 
             if (!authUser) appToast('Session expired', 'error');
 
             setAuthUser(null);
-            cookies.remove('bereal-user-info');
-            cookies.remove('bereal-auth');
         }
     };
 
     const fetchLatestPhotos = async () => {
-        return await authFetchApi('/feed', {
-            cache: cached ? 'force-cache' : 'reload'
-        });
+        return await authFetchApi(
+            '/feed',
+            {
+                cache: cached ? 'force-cache' : 'reload'
+            },
+            { 400: () => appToast('Error fetching feed', 'error') }
+        );
     };
 
     const fetchLatestPhotosByUsername = async (username) => {
@@ -47,23 +50,23 @@ export const useAuthFetch = () => {
             {
                 cache: cached ? 'force-cache' : 'reload'
             },
-            404
+            { 404: null }
         );
-    };
-
-    const logout = async () => {
-        return await authFetchApi('/logout', {
-            method: 'POST'
-        });
     };
 
     useEffect(() => {
         if (cached) setCached(false);
     }, [cached]);
 
+    useEffect(() => {
+        if (!authUser) {
+            cookies.remove('bereal-user-info');
+            cookies.remove('bereal-auth');
+        }
+    }, [authUser, cookies]);
+
     return {
         fetchLatestPhotos,
-        fetchLatestPhotosByUsername,
-        logout
+        fetchLatestPhotosByUsername
     };
 };

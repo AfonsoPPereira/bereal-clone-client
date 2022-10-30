@@ -1,3 +1,4 @@
+import { Box, Modal } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
 import ReactImageGallery from 'react-image-gallery';
@@ -14,20 +15,12 @@ MainLayout.propTypes = {
 export default function MainLayout({ header, children }) {
     const [modal, setModal] = useState({
         open: false,
-        loading: false,
         items: [],
         photoId: null,
         photoUrl: null,
-        startIndex: 0
+        startIndex: 0,
+        currImgUrl: null
     });
-    const [currImgUrl, setCurrImgUrl] = useState(null);
-    const galleryRef = useRef(null);
-
-    useEffect(() => {
-        if (modal.open && !modal.loading) {
-            setCurrImgUrl(modal.items[galleryRef.current?.state?.currentIndex]?.original);
-        }
-    }, [modal.items, modal.open, modal.loading]);
 
     return (
         <>
@@ -38,20 +31,44 @@ export default function MainLayout({ header, children }) {
                 </div>
             </header>
             <main id="content">
-                <ModalContext.Provider value={[modal, setModal]}>
-                    {children}
-                    <ModalGallery>
-                        <ReactImageGallery
-                            showPlayButton={false}
-                            items={modal.items}
-                            startIndex={modal.startIndex}
-                            thumbnailPosition="left"
-                            ref={galleryRef}
-                            onSlide={(index) => setCurrImgUrl(modal.items[index]?.original)}
-                            renderCustomControls={() => <DownloadImgButton url={currImgUrl} />}
-                        />
-                    </ModalGallery>
-                </ModalContext.Provider>
+                <ModalContext.Provider value={[modal, setModal]}>{children}</ModalContext.Provider>
+                <Modal
+                    open={modal.open}
+                    onClose={() => setModal((state) => ({ ...state, open: false, loading: false }))}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%) scale(0.95)',
+                            bgcolor: 'white',
+                            width: '95%',
+                            p: 4
+                        }}
+                        border="none"
+                    >
+                        {!modal.loading && (
+                            <ReactImageGallery
+                                showPlayButton={false}
+                                items={modal.items}
+                                startIndex={modal.startIndex}
+                                thumbnailPosition="left"
+                                onSlide={(index) =>
+                                    setModal((state) => ({
+                                        ...state,
+                                        currImgUrl: state.items[index]?.original
+                                    }))
+                                }
+                                renderCustomControls={() => (
+                                    <DownloadImgButton url={modal.currImgUrl} />
+                                )}
+                            />
+                        )}
+                    </Box>
+                </Modal>
             </main>
         </>
     );
