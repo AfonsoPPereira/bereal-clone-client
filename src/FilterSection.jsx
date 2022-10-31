@@ -2,12 +2,14 @@ import PropTypes from 'prop-types';
 import { Autocomplete, Button, TextField } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import useStorage from './hooks/useStorage';
+import { useStore } from './store/store';
 
-FilterSection.propTypes = {
-    users: PropTypes.array.isRequired
-};
+export default function FilterSection() {
+    const setFilteredUsers = useStore((state) => state.setFilteredUsers);
+    const sortUsersByName = useStore((state) => state.sortUsersByName);
+    const sortUsersByDate = useStore((state) => state.sortUsersByDate);
+    const users = useStore((state) => state.users);
 
-export default function FilterSection({ users: [users, setUsers] }) {
     const [filter, setFilter] = useState(null);
     const [selectOpen, setSelectOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useStorage('filtered-users', []);
@@ -19,55 +21,26 @@ export default function FilterSection({ users: [users, setUsers] }) {
     useEffect(() => {
         if (selectOpen || !Array.isArray(users)) return;
 
-        setUsers(
-            users.filter(
-                (user) =>
-                    user.photos.length &&
-                    (!selectedOptions?.length || selectedOptions.includes(user.username))
-            )
-        );
-    }, [selectedOptions, setUsers, users, selectOpen]);
-
-    const sortByName = () => {
-        setFilter('sortByName');
-    };
-
-    const sortByLatestDate = () => {
-        setFilter('sortByDate');
-    };
+        setFilteredUsers(selectedOptions);
+    }, [selectedOptions, setFilteredUsers, users, selectOpen]);
 
     useEffect(() => {
         switch (filter) {
         case 'sortByName':
-            setUsers((users) =>
-                [...users].sort((a, b) => {
-                    if (a.username > b.username) {
-                        return 1;
-                    }
-                    if (a.username < b.username) {
-                        return -1;
-                    }
-
-                    return 0;
-                })
-            );
+            sortUsersByName();
             break;
         case 'sortByDate':
-            setUsers((users) =>
-                [...users].sort(
-                    (a, b) => (b.photos[0]?.takenAt || 0) - (a.photos[0]?.takenAt || 0)
-                )
-            );
+            sortUsersByDate();
             break;
         }
-    }, [filter, setUsers]);
+    }, [filter, sortUsersByName, sortUsersByDate]);
 
     return (
         <div className="filter-div">
-            <Button variant="outlined" onClick={sortByName}>
+            <Button variant="outlined" onClick={() => setFilter('sortByName')}>
                 Sort By Name
             </Button>
-            <Button variant="outlined" onClick={sortByLatestDate}>
+            <Button variant="outlined" onClick={() => setFilter('sortByDate')}>
                 Sort By Latest Date
             </Button>
             <Autocomplete

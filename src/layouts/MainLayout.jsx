@@ -1,11 +1,13 @@
 import { Box, Modal } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useMemo } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import ReactImageGallery from 'react-image-gallery';
 import DownloadImgButton from '../components/DownloadImgButton';
 import ModalContext from '../context/ModalContext';
 import LoggedInUser from '../LoggedInUser';
 import ModalGallery from '../ModalGallery';
+import { useStore } from '../store/store';
 
 MainLayout.propTypes = {
     header: PropTypes.node,
@@ -13,14 +15,8 @@ MainLayout.propTypes = {
 };
 
 export default function MainLayout({ header, children }) {
-    const [modal, setModal] = useState({
-        open: false,
-        items: [],
-        photoId: null,
-        photoUrl: null,
-        startIndex: 0,
-        currImgUrl: null
-    });
+    const { open, startIndex, items, setClose } = useStore((state) => state.modal);
+    const galleryRef = useRef(null);
 
     return (
         <>
@@ -31,10 +27,10 @@ export default function MainLayout({ header, children }) {
                 </div>
             </header>
             <main id="content">
-                <ModalContext.Provider value={[modal, setModal]}>{children}</ModalContext.Provider>
+                {children}
                 <Modal
-                    open={modal.open}
-                    onClose={() => setModal((state) => ({ ...state, open: false, loading: false }))}
+                    open={open}
+                    onClose={setClose}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
@@ -50,20 +46,19 @@ export default function MainLayout({ header, children }) {
                         }}
                         border="none"
                     >
-                        {!modal.loading && (
+                        {open && (
                             <ReactImageGallery
                                 showPlayButton={false}
-                                items={modal.items}
-                                startIndex={modal.startIndex}
+                                items={items}
+                                startIndex={startIndex}
                                 thumbnailPosition="left"
-                                onSlide={(index) =>
-                                    setModal((state) => ({
-                                        ...state,
-                                        currImgUrl: state.items[index]?.original
-                                    }))
-                                }
+                                ref={galleryRef}
                                 renderCustomControls={() => (
-                                    <DownloadImgButton url={modal.currImgUrl} />
+                                    <DownloadImgButton
+                                        url={
+                                            items?.[galleryRef.current?.getCurrentIndex()]?.original
+                                        }
+                                    />
                                 )}
                             />
                         )}

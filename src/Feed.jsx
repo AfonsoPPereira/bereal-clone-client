@@ -8,18 +8,17 @@ import LoadingContent from './LoadingContent';
 import FilterSection from './FilterSection';
 import MainLayout from './layouts/MainLayout';
 import { appToast, isDataEqual } from './utils';
+import { useStore } from './store/store';
 
 export default function Feed() {
     const { fetchLatestPhotos } = useAuthFetch();
-    const [, setUsers] = useState(null);
+    const setAllUsers = useStore((state) => state.setAllUsers);
+    const filteredUsers = useStore((state) => state.filteredUsers);
 
-    const {
-        data: allUsers,
-        isFetching,
-        refetch
-    } = useQuery(['feed'], fetchLatestPhotos, {
+    const { isFetching, refetch } = useQuery(['feed'], fetchLatestPhotos, {
         refetchOnWindowFocus: false,
-        isDataEqual
+        isDataEqual,
+        onSuccess: setAllUsers
     });
 
     return (
@@ -30,10 +29,12 @@ export default function Feed() {
                 </Header>
             }
         >
-            <FilterSection users={[allUsers, setUsers]} />
+            <FilterSection />
             <LoadingContent isFetching={isFetching}>
-                {!isFetching && allUsers !== null && !allUsers?.length && <h2>Empty Feed</h2>}
-                {allUsers?.map((user) => (
+                {!isFetching && filteredUsers !== null && !filteredUsers?.length && (
+                    <h2>Empty Feed</h2>
+                )}
+                {filteredUsers?.map((user) => (
                     <User key={user.id} user={user} />
                 ))}
             </LoadingContent>

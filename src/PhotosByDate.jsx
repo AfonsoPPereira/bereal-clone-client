@@ -5,10 +5,11 @@ import moment from 'moment';
 import Tooltip from '@mui/material/Tooltip';
 
 PhotosByDate.propTypes = {
-    photo: PropTypes.object.isRequired
+    photo: PropTypes.object.isRequired,
+    userId: PropTypes.string
 };
 
-export default function PhotosByDate({ photo }) {
+export default function PhotosByDate({ photo, userId }) {
     return (
         <div className="photo-container__date">
             <Tooltip
@@ -23,7 +24,7 @@ export default function PhotosByDate({ photo }) {
             </Tooltip>
             <div className="photos">
                 {[photo.photoURL, photo.secondaryPhotoURL].map((url) => (
-                    <Photo key={url} url={url} photo={photo} />
+                    <Photo key={url} url={url} photo={photo} userId={userId} />
                 ))}
             </div>
         </div>
