@@ -1,18 +1,18 @@
-import PropTypes from 'prop-types';
 import { Autocomplete, Button, TextField } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import useStorage from './hooks/useStorage';
-import { useStore } from './store/store';
+import { useUsersStore } from './store/store-users';
 
 export default function FilterSection() {
-    const setFilteredUsers = useStore((state) => state.setFilteredUsers);
-    const sortUsersByName = useStore((state) => state.sortUsersByName);
-    const sortUsersByDate = useStore((state) => state.sortUsersByDate);
-    const users = useStore((state) => state.users);
+    const setFilteredUsers = useUsersStore((state) => state.setFilteredUsers);
+    const sortUsersByName = useUsersStore((state) => state.sortUsersByName);
+    const sortUsersByDate = useUsersStore((state) => state.sortUsersByDate);
+    const users = useUsersStore((state) => state.users);
 
     const [filter, setFilter] = useState(null);
     const [selectOpen, setSelectOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useStorage('filtered-users', []);
+
     const usersFilterOptions = useMemo(
         () => (Array.isArray(users) ? users?.map((user) => user.username)?.sort() : []),
         [users]

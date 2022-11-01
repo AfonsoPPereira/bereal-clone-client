@@ -1,43 +1,28 @@
 import PropTypes from 'prop-types';
 import PhotosByDate from './PhotosByDate';
-import { useContext, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import ModalContext from './context/ModalContext';
-import { useStore } from './store/store';
+import { Box, Modal } from '@mui/material';
+import ReactImageGallery from 'react-image-gallery';
+import DownloadImgButton from './components/DownloadImgButton';
+import { useRef } from 'react';
+import { useState } from 'react';
 
 Gallery.propTypes = {
-    photos: PropTypes.array.isRequired,
-    userId: PropTypes.string
+    photos: PropTypes.array.isRequired
 };
 
-export default function Gallery({ photos, userId }) {
-    /* const items = useMemo(
-        () =>
-            photos
-                .map((photo) => [
-                    {
-                        original: photo.photoURL,
-                        thumbnail: photo.photoURL,
-                        originalTitle: photo.caption,
-                        thumbnailTitle: photo.caption
-                    },
-                    {
-                        original: photo.secondaryPhotoURL,
-                        thumbnail: photo.secondaryPhotoURL,
-                        originalTitle: photo.caption,
-                        thumbnailTitle: photo.caption
-                    }
-                ])
-                .flatMap((val) => val),
-        [photos]
-    ); */
-    /* const open = useStore((state) => state.open);
-    const photoId = useStore((state) => state.photoId);
-    const setItems = useStore((state) => state.setItems); */
+export default function Gallery({ photos }) {
+    const [modal, setModal] = useState({
+        open: false,
+        currImgUrl: null
+    });
+    const galleryRef = useRef();
 
-    /* useEffect(() => {
-        if (open && photos.some((e) => e.id === photoId)) {
-            setItems(
-                photos
+    const items = useMemo(
+        () =>
+            modal.open
+                ? photos
                     .map((photo) => [
                         {
                             original: photo.photoURL,
@@ -53,16 +38,54 @@ export default function Gallery({ photos, userId }) {
                         }
                     ])
                     .flatMap((val) => val)
-            );
-        }
-    }, [open, photoId, photos, setItems]); */
+                : [],
+        [photos, modal.open]
+    );
+    const startIndex = useMemo(() => {
+        const index = items.findIndex((photo) => photo.original === modal.currImgUrl);
+        if (index <= 0) return 0;
+
+        return index;
+    }, [items, modal.currImgUrl]);
 
     return (
-        <div className="photo-container">
-            {!!photos.length &&
-                photos.map((photo) => (
-                    <PhotosByDate key={photo.id} photo={photo} userId={userId} />
-                ))}
-        </div>
+        <>
+            <ModalContext.Provider value={[modal, setModal]}>
+                <div className="photo-container">
+                    {!!photos.length &&
+                        photos.map((photo) => <PhotosByDate key={photo.id} photo={photo} />)}
+                </div>
+            </ModalContext.Provider>
+            {modal.open && (
+                <Modal
+                    open={modal.open}
+                    onClose={() => setModal((state) => ({ ...state, open: false }))}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%) scale(0.95)',
+                            bgcolor: 'white',
+                            width: '95%',
+                            p: 4
+                        }}
+                        border="none"
+                    >
+                        <ReactImageGallery
+                            showPlayButton={false}
+                            items={items}
+                            startIndex={startIndex}
+                            ref={galleryRef}
+                            thumbnailPosition="left"
+                            renderCustomControls={() => <DownloadImgButton ref={galleryRef} />}
+                        />
+                    </Box>
+                </Modal>
+            )}
+        </>
     );
 }

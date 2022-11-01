@@ -2,16 +2,14 @@ import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import LazyImg from './components/LazyImg';
 import ModalContext from './context/ModalContext';
-import { useStore } from './store/store';
 
 Photo.propTypes = {
     url: PropTypes.string,
-    photo: PropTypes.any,
-    userId: PropTypes.string
+    caption: PropTypes.string
 };
 
-export default function Photo({ url, photo, userId }) {
-    const { setOpen, setItems } = useStore((state) => state.modal);
+export default function Photo({ url, caption }) {
+    const [, setModal] = useContext(ModalContext);
 
     return (
         <LazyImg
@@ -19,12 +17,15 @@ export default function Photo({ url, photo, userId }) {
             height="256px"
             className="photo"
             src={url}
-            alt={photo.caption}
+            alt={caption}
             threshold={0.2}
-            onClick={() => {
-                setItems(userId);
-                setOpen(photo, url);
-            }}
+            onClick={() =>
+                setModal((state) => ({
+                    ...state,
+                    open: true,
+                    currImgUrl: url
+                }))
+            }
         />
     );
 }

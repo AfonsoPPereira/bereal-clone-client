@@ -18,7 +18,7 @@ export default function User({ isFetching, user }) {
                 {!user?.photos?.length && (
                     <h2 style={{ marginTop: '2em' }}>User has no photos yet</h2>
                 )}
-                {!!user?.photos?.length && <Gallery userId={user.id} photos={user.photos} />}
+                {!!user?.photos?.length && <Gallery photos={user.photos} />}
             </div>
         )
     );

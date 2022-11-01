@@ -2,18 +2,17 @@ import User from './User';
 import { useAuthFetch } from './hooks/useAuthFetch';
 import { useQuery } from '@tanstack/react-query';
 import RefreshLatestButton from './components/RefreshLatestButton';
-import { useState } from 'react';
 import Header from './Header';
 import LoadingContent from './LoadingContent';
 import FilterSection from './FilterSection';
 import MainLayout from './layouts/MainLayout';
-import { appToast, isDataEqual } from './utils';
-import { useStore } from './store/store';
+import { isDataEqual } from './utils';
+import { useUsersStore } from './store/store-users';
 
 export default function Feed() {
     const { fetchLatestPhotos } = useAuthFetch();
-    const setAllUsers = useStore((state) => state.setAllUsers);
-    const filteredUsers = useStore((state) => state.filteredUsers);
+    const setAllUsers = useUsersStore((state) => state.setAllUsers);
+    const filteredUsers = useUsersStore((state) => state.filteredUsers);
 
     const { isFetching, refetch } = useQuery(['feed'], fetchLatestPhotos, {
         refetchOnWindowFocus: false,
