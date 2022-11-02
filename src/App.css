@@ -101,6 +101,14 @@ body {
     overflow-x: auto;
 }
 
+.photo-container-user {
+    flex-direction: column;
+}
+
+.photo-container__date {
+    width: max-content;
+}
+
 .date-title {
     display: flex;
     align-items: center;
@@ -122,7 +130,7 @@ body {
 
 .filter-div {
     display: flex;
-    gap: 0.5em;
+    gap: 0.8em;
 }
 
 @media (max-width: 360px) {

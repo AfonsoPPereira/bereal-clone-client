@@ -7,12 +7,14 @@ import ReactImageGallery from 'react-image-gallery';
 import DownloadImgButton from './components/DownloadImgButton';
 import { useRef } from 'react';
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 Gallery.propTypes = {
     photos: PropTypes.array.isRequired
 };
 
 export default function Gallery({ photos }) {
+    const location = useLocation();
     const [modal, setModal] = useState({
         open: false,
         currImgUrl: null
@@ -51,7 +53,11 @@ export default function Gallery({ photos }) {
     return (
         <>
             <ModalContext.Provider value={[modal, setModal]}>
-                <div className="photo-container">
+                <div
+                    className={`photo-container ${
+                        location.pathname === '/feed' ? '' : 'photo-container-user'
+                    }`}
+                >
                     {!!photos.length &&
                         photos.map((photo) => <PhotosByDate key={photo.id} photo={photo} />)}
                 </div>

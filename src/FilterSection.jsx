@@ -17,6 +17,7 @@ export default function FilterSection() {
         () => (Array.isArray(users) ? users?.map((user) => user.username)?.sort() : []),
         [users]
     );
+    const filterUsersLabel = useMemo(() => `Filter Users (${users.length})`, [users.length]);
 
     useEffect(() => {
         if (selectOpen || !Array.isArray(users)) return;
@@ -51,7 +52,7 @@ export default function FilterSection() {
                 limitTags={2}
                 sx={{ minWidth: 200 }}
                 options={usersFilterOptions}
-                renderInput={(params) => <TextField {...params} label="Filter Users" />}
+                renderInput={(params) => <TextField {...params} label={filterUsersLabel} />}
                 value={selectedOptions}
                 onChange={(event, value) => setSelectedOptions(value)}
             />
