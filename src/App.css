@@ -102,7 +102,7 @@ body {
 }
 
 .photo-container-user {
-    flex-direction: column;
+    flex-wrap: wrap;
 }
 
 .photo-container__date {

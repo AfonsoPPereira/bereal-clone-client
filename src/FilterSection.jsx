@@ -11,19 +11,25 @@ export default function FilterSection() {
 
     const [filter, setFilter] = useState(null);
     const [selectOpen, setSelectOpen] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useStorage('filtered-users', []);
+    const [filterUsersOptions, setFilterUsersOptions] = useStorage('filtered-users', {
+        total: 0,
+        users: []
+    });
 
     const usersFilterOptions = useMemo(
         () => (Array.isArray(users) ? users?.map((user) => user.username)?.sort() : []),
         [users]
     );
-    const filterUsersLabel = useMemo(() => `Filter Users (${users.length})`, [users.length]);
+    const filterUsersLabel = useMemo(
+        () => `Filter Users (${users?.length || filterUsersOptions.total || 0})`,
+        [users.length, filterUsersOptions.total]
+    );
 
     useEffect(() => {
         if (selectOpen || !Array.isArray(users)) return;
 
-        setFilteredUsers(selectedOptions);
-    }, [selectedOptions, setFilteredUsers, users, selectOpen]);
+        setFilteredUsers(filterUsersOptions.users);
+    }, [filterUsersOptions.users, setFilteredUsers, users, selectOpen]);
 
     useEffect(() => {
         switch (filter) {
@@ -53,8 +59,14 @@ export default function FilterSection() {
                 sx={{ minWidth: 200 }}
                 options={usersFilterOptions}
                 renderInput={(params) => <TextField {...params} label={filterUsersLabel} />}
-                value={selectedOptions}
-                onChange={(event, value) => setSelectedOptions(value)}
+                value={filterUsersOptions.users}
+                onChange={(event, value) =>
+                    setFilterUsersOptions((state) => ({
+                        ...state,
+                        total: users?.length || 0,
+                        users: value
+                    }))
+                }
             />
         </div>
     );
