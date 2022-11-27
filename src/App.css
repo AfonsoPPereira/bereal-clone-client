@@ -119,7 +119,8 @@ body {
     display: flex;
 }
 
-.photo {
+.photo,
+.MuiSkeleton-root.skeleton {
     cursor: pointer;
     border-radius: 5%;
 }

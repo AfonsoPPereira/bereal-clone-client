@@ -1,53 +1,63 @@
+import PropTypes from 'prop-types';
 import { Autocomplete, Button, TextField } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import useStorage from './hooks/useStorage';
 import { useUsersStore } from './store/store-users';
 
-export default function FilterSection() {
-    const setFilteredUsers = useUsersStore((state) => state.setFilteredUsers);
+FilterSection.propTypes = {
+    filterSection: PropTypes.array.isRequired,
+    selectOpen: PropTypes.array.isRequired
+};
+
+export default function FilterSection({
+    filterSection: [filterSection, setFilterSection],
+    selectOpen: [, setSelectOpen]
+}) {
     const sortUsersByName = useUsersStore((state) => state.sortUsersByName);
     const sortUsersByDate = useUsersStore((state) => state.sortUsersByDate);
     const users = useUsersStore((state) => state.users);
 
     const [filter, setFilter] = useState(null);
-    const [selectOpen, setSelectOpen] = useState(false);
-    const [filterUsersOptions, setFilterUsersOptions] = useStorage('filtered-users', {
-        total: 0,
-        users: []
-    });
 
     const usersFilterOptions = useMemo(
-        () => (Array.isArray(users) ? users?.map((user) => user.username)?.sort() : []),
+        () =>
+            Array.isArray(users)
+                ? users
+                    ?.map((user) => ({
+                        label: user.username,
+                        id: user.id
+                    }))
+                    ?.sort((a, b) => (a.label > b.label ? 1 : -1))
+                : [],
         [users]
     );
     const filterUsersLabel = useMemo(
-        () => `Filter Users (${users?.length || filterUsersOptions.total || 0})`,
-        [users.length, filterUsersOptions.total]
+        () => `Filter Users (${filterSection.options.length || filterSection.totalUsers})`,
+        [filterSection.totalUsers, filterSection.options.length]
     );
 
     useEffect(() => {
-        if (selectOpen || !Array.isArray(users)) return;
-
-        setFilteredUsers(filterUsersOptions.users);
-    }, [filterUsersOptions.users, setFilteredUsers, users, selectOpen]);
-
-    useEffect(() => {
-        switch (filter) {
-        case 'sortByName':
+        switch (filterSection.sortBy) {
+        case 'name':
             sortUsersByName();
             break;
-        case 'sortByDate':
+        case 'latestDate':
             sortUsersByDate();
             break;
         }
-    }, [filter, sortUsersByName, sortUsersByDate]);
+    }, [filterSection.sortBy, sortUsersByName, sortUsersByDate]);
 
     return (
         <div className="filter-div">
-            <Button variant="outlined" onClick={() => setFilter('sortByName')}>
+            <Button
+                variant="outlined"
+                onClick={() => setFilterSection((state) => ({ ...state, sortBy: 'name' }))}
+            >
                 Sort By Name
             </Button>
-            <Button variant="outlined" onClick={() => setFilter('sortByDate')}>
+            <Button
+                variant="outlined"
+                onClick={() => setFilterSection((state) => ({ ...state, sortBy: 'latestDate' }))}
+            >
                 Sort By Latest Date
             </Button>
             <Autocomplete
@@ -59,13 +69,10 @@ export default function FilterSection() {
                 sx={{ minWidth: 200 }}
                 options={usersFilterOptions}
                 renderInput={(params) => <TextField {...params} label={filterUsersLabel} />}
-                value={filterUsersOptions.users}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={filterSection.options}
                 onChange={(event, value) =>
-                    setFilterUsersOptions((state) => ({
-                        ...state,
-                        total: users?.length || 0,
-                        users: value
-                    }))
+                    setFilterSection((state) => ({ ...state, options: value }))
                 }
             />
         </div>

@@ -9,10 +9,12 @@ import { isDataEqual } from './utils';
 import MainLayout from './layouts/MainLayout';
 import LoadingContent from './LoadingContent';
 import User from './User';
+import { useUsersStore } from './store/store-users';
 
 export default function UserFromRoute() {
     const { username } = useParams();
     const { fetchLatestPhotosByUsername } = useAuthFetch();
+    const setAllUsers = useUsersStore((state) => state.setAllUsers);
 
     const {
         data: user,
@@ -20,7 +22,10 @@ export default function UserFromRoute() {
         refetch
     } = useQuery(['fetchUser', username], () => fetchLatestPhotosByUsername(username), {
         refetchOnWindowFocus: false,
-        isDataEqual
+        isDataEqual,
+        onSuccess: (data) => {
+            setAllUsers([data]);
+        }
     });
 
     return (

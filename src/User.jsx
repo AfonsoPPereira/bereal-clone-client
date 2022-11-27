@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import ProfileHeader from './ProfileHeader';
-import Gallery from './Gallery';
 import React from 'react';
+import Gallery from './Gallery';
 
 User.propTypes = {
     isFetching: PropTypes.bool,

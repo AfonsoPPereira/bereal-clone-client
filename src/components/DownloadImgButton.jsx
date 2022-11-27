@@ -7,7 +7,10 @@ import { forwardRef } from 'react';
 
 const DownloadImgButton = forwardRef(({ sx }, ref) => {
     const currentIndex = ref.current?.state.currentIndex;
-    const url = useMemo(() => ref.current?.props.items[currentIndex].original, [ref, currentIndex]);
+    const url = useMemo(
+        () => ref.current?.props.items?.[currentIndex]?.original,
+        [ref, currentIndex]
+    );
 
     if (!url) return null;
 

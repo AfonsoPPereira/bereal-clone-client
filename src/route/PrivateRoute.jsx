@@ -4,6 +4,7 @@ import AuthUserContext from '../context/AuthUserContext';
 import ScrollToTop from 'react-scroll-to-top';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ModalGallery from '../ModalGallery';
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ export default function PrivateRoute({ children }) {
             <QueryClientProvider client={queryClient}>
                 <Outlet />
             </QueryClientProvider>
+            <ModalGallery />
             <ScrollToTop
                 smooth
                 viewBox="0 0 24 24"

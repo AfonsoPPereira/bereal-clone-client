@@ -44,6 +44,16 @@ export const useAuthFetch = () => {
         );
     };
 
+    const fetchLatestPhotosUsers = async () => {
+        return await authFetchApi(
+            '/users',
+            {
+                cache: cached ? 'force-cache' : 'reload'
+            },
+            { 400: () => appToast('Error fetching feed', 'error') }
+        );
+    };
+
     const fetchLatestPhotosByUsername = async (username) => {
         return await authFetchApi(
             `/user/${username}`,
@@ -67,6 +77,7 @@ export const useAuthFetch = () => {
 
     return {
         fetchLatestPhotos,
-        fetchLatestPhotosByUsername
+        fetchLatestPhotosByUsername,
+        fetchLatestPhotosUsers
     };
 };

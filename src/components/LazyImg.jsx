@@ -34,12 +34,11 @@ export default function LazyImg({
             {
                 root: null,
                 rootMargin: '0px',
-                threshold,
+                threshold
             }
         );
 
-        if (placeholderRef?.current)
-            observer.observe(placeholderRef.current);
+        if (placeholderRef?.current) observer.observe(placeholderRef.current);
 
         return () => {
             observer?.disconnect();
@@ -64,11 +63,7 @@ export default function LazyImg({
                     <Tooltip placement="top" title={alt || ''}>
                         <img
                             {...props}
-                            style={
-                                loaded
-                                    ? { width, height }
-                                    : { width: 0, height: 0 }
-                            }
+                            style={loaded ? { width, height } : { width: 0, height: 0 }}
                             alt={alt || ''}
                             onLoad={() => setLoaded(true)}
                         />
