@@ -47,3 +47,23 @@ export const isDataEqual = (oldData, newData) => {
         appToast('Up to date.');
     }
 };
+
+export const imgStyle = {
+    width: 192,
+    height: 256,
+    ratio: 2
+};
+
+export const compressImg = (url) =>
+    url?.replace(
+        /(^https:\/\/.*\/Photos\/)/i,
+        `https://storage.bere.al/cdn-cgi/image/width=${imgStyle.width * imgStyle.ratio},height=${
+            imgStyle.height * imgStyle.ratio
+        }/Photos/`
+    );
+
+export const uncompressImg = (url) =>
+    url?.replace(
+        /(^https:\/\/.+\/width=.+,height=.+\/Photos\/)/i,
+        'https://cdn.bereal.network/Photos/'
+    );

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { CircularProgress } from '@mui/material';
+import LoadingSpinner from './components/LoadingSpinner';
 
 Header.propTypes = {
     isFetching: PropTypes.bool.isRequired,
@@ -10,7 +10,7 @@ export default function Header({ isFetching, children }) {
     if (isFetching)
         return (
             <div className="loading-div">
-                <CircularProgress disableShrink />
+                <LoadingSpinner />
             </div>
         );
 

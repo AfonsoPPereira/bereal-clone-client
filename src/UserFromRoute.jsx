@@ -14,7 +14,7 @@ import { useUsersStore } from './store/store-users';
 export default function UserFromRoute() {
     const { username } = useParams();
     const { fetchLatestPhotosByUsername } = useAuthFetch();
-    const setAllUsers = useUsersStore((state) => state.setAllUsers);
+    const setFilteredUsers = useUsersStore((state) => state.setFilteredUsers);
 
     const {
         data: user,
@@ -24,7 +24,7 @@ export default function UserFromRoute() {
         refetchOnWindowFocus: false,
         isDataEqual,
         onSuccess: (data) => {
-            setAllUsers([data]);
+            setFilteredUsers([data]);
         }
     });
 

@@ -4,6 +4,7 @@ import Avatar from 'react-avatar';
 import { Controlled as ControlledZoom } from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { Link } from 'react-router-dom';
+import { uncompressImg } from './utils';
 
 ProfileHeader.propTypes = {
     user: PropTypes.object.isRequired
@@ -11,9 +12,7 @@ ProfileHeader.propTypes = {
 
 export default function ProfileHeader({ user }) {
     const profilePicture = useMemo(
-        () =>
-            user?.profilePicture?.replace(/(width=)(\d+)(,height=)(\d+)/, '$1$3') ||
-            ''[user?.profilePicture],
+        () => uncompressImg(user?.profilePicture),
         [user?.profilePicture]
     );
 

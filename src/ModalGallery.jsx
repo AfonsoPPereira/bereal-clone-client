@@ -6,9 +6,10 @@ import DownloadImgButton from './components/DownloadImgButton';
 import ReactImageGallery from 'react-image-gallery';
 import { useUsersStore } from './store/store-users';
 import { useRef } from 'react';
+import { compressImg } from './utils';
 
 export default function ModalGallery() {
-    const users = useUsersStore((state) => state.users);
+    const filteredUsers = useUsersStore((state) => state.filteredUsers);
     const open = useModalStore((state) => state.open);
     const url = useModalStore((state) => state.url);
     const setOpen = useModalStore((state) => state.setOpen);
@@ -19,26 +20,31 @@ export default function ModalGallery() {
         [url]
     );
     const photos = useMemo(
-        () => users?.find((user) => user.id === selectedUserId)?.photos,
-        [users, selectedUserId]
+        () => filteredUsers?.find((user) => user.id === selectedUserId)?.photos,
+        [filteredUsers, selectedUserId]
     );
     const items = useMemo(
         () =>
             photos
-                ?.map((photo) => [
-                    {
-                        original: photo.photoURL,
-                        thumbnail: photo.photoURL,
-                        originalTitle: photo.caption,
-                        thumbnailTitle: photo.caption
-                    },
-                    {
-                        original: photo.secondaryPhotoURL,
-                        thumbnail: photo.secondaryPhotoURL,
-                        originalTitle: photo.caption,
-                        thumbnailTitle: photo.caption
-                    }
-                ])
+                ?.map((photo) => {
+                    const compressedPhotoURL = compressImg(photo.photoURL);
+                    const compressedSecondaryPhotoURL = compressImg(photo.secondaryPhotoURL);
+
+                    return [
+                        {
+                            original: compressedPhotoURL,
+                            thumbnail: compressedPhotoURL,
+                            originalTitle: photo.caption,
+                            thumbnailTitle: photo.caption
+                        },
+                        {
+                            original: compressedSecondaryPhotoURL,
+                            thumbnail: compressedSecondaryPhotoURL,
+                            originalTitle: photo.caption,
+                            thumbnailTitle: photo.caption
+                        }
+                    ];
+                })
                 .flatMap((val) => val) ?? [],
         [photos]
     );

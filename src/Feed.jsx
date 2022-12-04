@@ -6,48 +6,22 @@ import Header from './Header';
 import LoadingContent from './LoadingContent';
 import FilterSection from './FilterSection';
 import MainLayout from './layouts/MainLayout';
-import { isDataEqual } from './utils';
+import { imgStyle, isDataEqual } from './utils';
 import { useUsersStore } from './store/store-users';
-import { useMemo, useState } from 'react';
-import useStorage from './hooks/useStorage';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import LazyLoad from 'react-lazyload';
+import LoadingSpinner from './components/LoadingSpinner';
 
 export default function Feed() {
     const { fetchLatestPhotos } = useAuthFetch();
-    const users = useUsersStore((state) => state.users);
-    const setAllUsers = useUsersStore((state) => state.setAllUsers);
-
-    const [filteredUsersId, setFilteredUsersId] = useState([]);
-    const [filterSection, setFilterSection] = useStorage('filtered-users', {
-        totalUsers: 0,
-        sortBy: 'latestDate',
-        options: []
-    });
-    const [selectOpen, setSelectOpen] = useState(false);
-
-    const filteredUsers = useMemo(
-        () =>
-            !filteredUsersId?.length
-                ? users
-                : users?.filter((user) => filteredUsersId.includes(user.id)) || [],
-        [filteredUsersId, users]
-    );
+    const filteredUsers = useUsersStore((state) => state.filteredUsers);
+    const [users, setUsers] = useState([]);
 
     const { isFetching, refetch } = useQuery(['feed'], fetchLatestPhotos, {
         refetchOnWindowFocus: false,
         isDataEqual,
-        onSuccess: (data) => {
-            setFilterSection((state) => ({ ...state, totalUsers: data.length }));
-            setAllUsers(data);
-        }
+        onSuccess: setUsers
     });
-
-    useEffect(() => {
-        if (!selectOpen) {
-            setFilteredUsersId(filterSection.options?.map((user) => user.id) || []);
-        }
-    }, [filterSection.options, selectOpen]);
 
     return (
         <MainLayout
@@ -57,14 +31,22 @@ export default function Feed() {
                 </Header>
             }
         >
-            <FilterSection
-                filterSection={[filterSection, setFilterSection]}
-                selectOpen={[selectOpen, setSelectOpen]}
-            />
+            <FilterSection users={users} />
             <LoadingContent isFetching={isFetching}>
                 {!isFetching && !filteredUsers?.length && <h2>Empty Feed</h2>}
                 {filteredUsers?.map((user) => (
-                    <LazyLoad key={user.id} height={200} offset={100}>
+                    <LazyLoad
+                        key={user.id}
+                        height={imgStyle.height}
+                        placeholder={
+                            <div
+                                className="placeholder-user-gallery"
+                                style={{ height: `${imgStyle.height}px` }}
+                            >
+                                <LoadingSpinner />
+                            </div>
+                        }
+                    >
                         <User user={user} />
                     </LazyLoad>
                 ))}

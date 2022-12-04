@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import { DownloadSharp } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import { downloadImage } from '../utils';
+import { downloadImage, uncompressImg } from '../utils';
 import { useMemo } from 'react';
 import { forwardRef } from 'react';
 
 const DownloadImgButton = forwardRef(({ sx }, ref) => {
     const currentIndex = ref.current?.state.currentIndex;
     const url = useMemo(
-        () => ref.current?.props.items?.[currentIndex]?.original,
+        () => uncompressImg(ref.current?.props?.items?.[currentIndex]?.original),
         [ref, currentIndex]
     );
 

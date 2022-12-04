@@ -26,8 +26,7 @@ body {
 
 .login-div {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    place-content: center;
     width: 100%;
     height: 100vh;
 }
@@ -35,8 +34,7 @@ body {
 .loading-div {
     display: flex;
     flex: 1;
-    align-items: center;
-    justify-content: center;
+    place-content: center;
 }
 
 .logged-in-user-div:only-child {
@@ -63,8 +61,7 @@ body {
 .login-form-div {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    place-content: center;
 }
 
 #content {
@@ -109,10 +106,9 @@ body {
     width: max-content;
 }
 
-.date-title {
+.align-center {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    place-content: center;
 }
 
 .photos {
@@ -132,6 +128,11 @@ body {
 .filter-div {
     display: flex;
     gap: 0.8em;
+}
+
+.placeholder-user-gallery {
+    display: grid;
+    place-content: center;
 }
 
 @media (max-width: 360px) {

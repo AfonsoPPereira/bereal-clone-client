@@ -5,10 +5,10 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { appToast } from './utils';
 import Cookies from 'universal-cookie';
-import CircularProgress from '@mui/material/CircularProgress';
 import { Input } from '@mui/material';
 import { usePublicFetch } from './hooks/usePublicFetch';
 import AuthUserContext from './context/AuthUserContext';
+import LoadingSpinner from './components/LoadingSpinner';
 
 export default function Login() {
     const cookies = new Cookies();
@@ -87,7 +87,7 @@ export default function Login() {
     };
 
     if (loading) {
-        return <CircularProgress disableShrink />;
+        return <LoadingSpinner />;
     }
 
     if (!stage) {
