@@ -81,7 +81,14 @@ export default function FilterSection({ users }) {
             filterCallback();
             setTimeout(() => forceCheck(), 500);
         }
-    }, [filterCallback, filterSectionJSON, filteredUsers, selectOpen, tempFilterSectionJSON]);
+    }, [
+        filterCallback,
+        filterSectionJSON,
+        filteredUsers,
+        selectOpen,
+        tempFilterSectionJSON,
+        users
+    ]);
 
     return (
         <div className="filter-div">
