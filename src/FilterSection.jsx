@@ -4,14 +4,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useUsersStore } from './store/store-users';
 import useStorage from './hooks/useStorage';
 import { forceCheck } from 'react-lazyload';
-import { useCallback } from 'react';
 
 FilterSection.propTypes = {
-    users: PropTypes.array.isRequired
+    users: PropTypes.array.isRequired,
+    dataUpdatedAt: PropTypes.number.isRequired
 };
 
-export default function FilterSection({ users }) {
+export default function FilterSection({ users, dataUpdatedAt }) {
     const filter = useUsersStore((state) => state.filter);
+    const setFilteredUsers = useUsersStore((state) => state.setFilteredUsers);
     const [selectOpen, setSelectOpen] = useState(false);
     const [filterSectionJSON, setFilterSectionJSON] = useState(null);
 
@@ -49,23 +50,19 @@ export default function FilterSection({ users }) {
         [filteredUsersId, users]
     );
 
-    const tempFilterSectionJSON = JSON.stringify(filterSection);
-    const filterCallback = useCallback(
-        () => filter(filteredUsers, filterSection.sortBy),
-        [filter, filterSection.sortBy, filteredUsers]
-    );
-
     const setSortedUsers = (options) => {
         options.sort((a, b) => {
             if (a.label < b.label) {
                 return -1;
             }
+
             if (b.label < a.label) {
                 return 1;
             }
 
             return 0;
         });
+
         setFilterSection((state) => ({
             ...state,
             options
@@ -73,22 +70,15 @@ export default function FilterSection({ users }) {
     };
 
     useEffect(() => {
-        if (
-            !selectOpen &&
-            (!filteredUsers?.length || filterSectionJSON !== tempFilterSectionJSON)
-        ) {
-            if (filteredUsers?.length) setFilterSectionJSON(tempFilterSectionJSON);
-            filterCallback();
-            setTimeout(() => forceCheck(), 500);
+        if (!selectOpen) {
+            setFilteredUsers(filteredUsers);
         }
-    }, [
-        filterCallback,
-        filterSectionJSON,
-        filteredUsers,
-        selectOpen,
-        tempFilterSectionJSON,
-        users
-    ]);
+    }, [selectOpen, setFilteredUsers, filteredUsers]);
+
+    useEffect(() => {
+        filter(filterSection.sortBy);
+        setTimeout(() => forceCheck(), 500);
+    }, [filter, filterSection.sortBy, filterSectionJSON, dataUpdatedAt]);
 
     return (
         <div className="filter-div">
@@ -108,7 +98,10 @@ export default function FilterSection({ users }) {
                 multiple
                 disableCloseOnSelect
                 onOpen={() => setSelectOpen(true)}
-                onClose={() => setSelectOpen(false)}
+                onClose={() => {
+                    setFilterSectionJSON(JSON.stringify(filterSection));
+                    setSelectOpen(false);
+                }}
                 limitTags={2}
                 sx={{ minWidth: 200 }}
                 options={usersFilterOptions}

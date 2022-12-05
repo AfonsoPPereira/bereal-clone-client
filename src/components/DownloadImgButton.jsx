@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { DownloadSharp } from '@mui/icons-material';
+import DownloadSharp from '@mui/icons-material/DownloadSharp';
 import { Button } from '@mui/material';
 import { downloadImage, uncompressImg } from '../utils';
 import { useMemo } from 'react';

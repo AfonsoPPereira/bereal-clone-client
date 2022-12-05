@@ -20,14 +20,17 @@ export const useUsersStore = create((set) => ({
         set((state) => ({
             filteredUsers
         })),
-    filter: (filteredUsers, sortBy) =>
+    filter: (sortBy) =>
         set((state) => {
+            let filteredUsers;
+
             switch (sortBy) {
             case 'name':
-                filteredUsers = sortUsersByName(filteredUsers);
+                filteredUsers = sortUsersByName(state.filteredUsers);
                 break;
             case 'date':
-                filteredUsers = sortUsersByDate(filteredUsers);
+            default:
+                filteredUsers = sortUsersByDate(state.filteredUsers);
                 break;
             }
 

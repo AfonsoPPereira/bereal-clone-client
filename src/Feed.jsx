@@ -17,7 +17,7 @@ export default function Feed() {
     const filteredUsers = useUsersStore((state) => state.filteredUsers);
     const [users, setUsers] = useState([]);
 
-    const { isFetching, refetch } = useQuery(['feed'], fetchLatestPhotos, {
+    const { isFetching, refetch, dataUpdatedAt, data } = useQuery(['feed'], fetchLatestPhotos, {
         refetchOnWindowFocus: false,
         isDataEqual,
         onSuccess: setUsers
@@ -31,9 +31,9 @@ export default function Feed() {
                 </Header>
             }
         >
-            <FilterSection users={users} />
+            <FilterSection users={users} dataUpdatedAt={dataUpdatedAt} />
             <LoadingContent isFetching={isFetching}>
-                {!isFetching && !filteredUsers?.length && <h2>Empty Feed</h2>}
+                {!isFetching && !data?.length && <h2>Empty Feed</h2>}
                 {filteredUsers?.map((user) => (
                     <LazyLoad
                         key={user.id}
