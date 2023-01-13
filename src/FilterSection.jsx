@@ -17,7 +17,6 @@ export default function FilterSection({ users, dataUpdatedAt }) {
     const [filterSectionJSON, setFilterSectionJSON] = useState(null);
 
     const [filterSection, setFilterSection] = useStorage('filtered-users', {
-        totalUsers: 0,
         sortBy: 'date',
         options: []
     });
@@ -35,8 +34,8 @@ export default function FilterSection({ users, dataUpdatedAt }) {
         [users]
     );
     const filterUsersLabel = useMemo(
-        () => `Filter Users (${filterSection.options.length || filterSection.totalUsers})`,
-        [filterSection.totalUsers, filterSection.options.length]
+        () => `Filter Users (${filterSection.options.length || usersFilterOptions.length})`,
+        [usersFilterOptions.length, filterSection.options.length]
     );
     const filteredUsersId = useMemo(
         () => filterSection.options?.map((user) => user.id) || [],
