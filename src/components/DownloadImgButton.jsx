@@ -8,19 +8,21 @@ import { forwardRef } from 'react';
 const DownloadImgButton = forwardRef(({ sx }, ref) => {
     const currentIndex = ref.current?.state.currentIndex;
     const url = useMemo(
-        () => uncompressImg(ref.current?.props?.items?.[currentIndex]?.original),
+        () => ref.current?.props?.items?.[currentIndex]?.originalUrl,
         [ref, currentIndex]
     );
 
     if (!url) return null;
 
     return (
-        <Button
-            sx={{ position: 'absolute', right: 0, zIndex: 99, ...sx }}
-            onClick={() => downloadImage(url)}
-        >
-            <DownloadSharp sx={{ color: 'black' }} />
-        </Button>
+        <>
+            <Button
+                sx={{ position: 'absolute', right: 0, zIndex: 99, ...sx }}
+                onClick={() => downloadImage(url)}
+            >
+                <DownloadSharp sx={{ color: 'black' }} />
+            </Button>
+        </>
     );
 });
 

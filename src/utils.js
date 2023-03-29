@@ -19,6 +19,8 @@ export function appToast(msg, type = 'success', options = {}) {
 
 export const fetchAuthApi = (url, options) => fetchApi(url, { ...options, credentials: 'include' });
 
+const getFileName = (url) => url.match(/.*\/(\w+\.\w+)$/).pop();
+
 export const downloadImage = async (url) => {
     try {
         const response = await fetchAuthApi(`/download?${new URLSearchParams({ url })}`);
@@ -27,8 +29,8 @@ export const downloadImage = async (url) => {
         const data = await response.blob();
 
         const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(data);
-        a.download = `${url.match(/^.+\/(.+)\.\w+$/).pop()}.png`;
+        a.href = URL.createObjectURL(data);
+        a.download = getFileName(url);
         a.click();
     } catch (error) {}
 };

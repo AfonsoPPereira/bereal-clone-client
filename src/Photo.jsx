@@ -3,7 +3,7 @@ import LazyLoad from 'react-lazyload';
 import PlaceholderImg from './components/PlaceholderImg';
 import IsFeed from './isFeed';
 import { useModalStore } from './store/store-modal';
-import { imgStyle } from './utils';
+import { compressImg, imgStyle } from './utils';
 
 Photo.propTypes = {
     url: PropTypes.string,
@@ -20,7 +20,7 @@ export default function Photo({ url, caption }) {
                 width={imgStyle.width}
                 height={imgStyle.height}
                 className="photo"
-                src={url}
+                src={compressImg(url)}
                 alt={caption}
                 onClick={() => {
                     setUrl(url);

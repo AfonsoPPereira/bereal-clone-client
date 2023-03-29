@@ -34,12 +34,14 @@ export default function ModalGallery() {
                         {
                             original: compressedPhotoURL,
                             thumbnail: compressedPhotoURL,
+                            originalUrl: photo.photoURL,
                             originalTitle: photo.caption,
                             thumbnailTitle: photo.caption
                         },
                         {
                             original: compressedSecondaryPhotoURL,
                             thumbnail: compressedSecondaryPhotoURL,
+                            originalUrl: photo.secondaryPhotoURL,
                             originalTitle: photo.caption,
                             thumbnailTitle: photo.caption
                         }
@@ -49,7 +51,7 @@ export default function ModalGallery() {
         [photos]
     );
     const startIndex = useMemo(() => {
-        const index = items?.findIndex((photo) => photo.original === url);
+        const index = items?.findIndex((photo) => photo.originalUrl === url);
         if (!index || index < 0) return 0;
 
         return index;
