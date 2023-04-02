@@ -20,7 +20,7 @@ export default function ModalGallery() {
         [url]
     );
     const photos = useMemo(
-        () => filteredUsers?.find((user) => user.id === selectedUserId)?.photos,
+        () => filteredUsers?.find((user) => user.id === selectedUserId)?.photos || [],
         [filteredUsers, selectedUserId]
     );
     const items = useMemo(

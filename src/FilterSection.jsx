@@ -24,8 +24,7 @@ export default function FilterSection({ users, dataUpdatedAt }) {
     const usersFilterOptions = useMemo(
         () =>
             Array.isArray(users)
-                ? users
-                    ?.map((user) => ({
+                ? users?.map((user) => ({
                         label: user.username,
                         id: user.id
                     }))
@@ -34,23 +33,23 @@ export default function FilterSection({ users, dataUpdatedAt }) {
         [users]
     );
     const filterUsersLabel = useMemo(
-        () => `Filter Users (${filterSection.options.length || usersFilterOptions.length})`,
-        [usersFilterOptions.length, filterSection.options.length]
+        () => `Filter Users (${filterSection?.options?.length || usersFilterOptions?.length})`,
+        [usersFilterOptions?.length, filterSection?.options?.length]
     );
     const filteredUsersId = useMemo(
-        () => filterSection.options?.map((user) => user.id) || [],
-        [filterSection.options]
+        () => filterSection?.options?.map((user) => user.id) || [],
+        [filterSection?.options]
     );
     const filteredUsers = useMemo(
         () =>
-            !filteredUsersId.length
-                ? users
-                : users?.filter((user) => filteredUsersId.includes(user.id)) || [],
+            !filteredUsersId?.length
+                ? users || []
+                : users?.filter((user) => filteredUsersId?.includes(user.id)) || [],
         [filteredUsersId, users]
     );
 
     const setSortedUsers = (options) => {
-        options.sort((a, b) => {
+        options?.sort((a, b) => {
             if (a.label < b.label) {
                 return -1;
             }

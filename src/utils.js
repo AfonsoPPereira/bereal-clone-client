@@ -19,7 +19,7 @@ export function appToast(msg, type = 'success', options = {}) {
 
 export const fetchAuthApi = (url, options) => fetchApi(url, { ...options, credentials: 'include' });
 
-const getFileName = (url) => url.match(/.*\/(\w+\.\w+)$/).pop();
+const getFileName = (url) => url.match(/.*\/(.+\.\w+)$/).pop();
 
 export const downloadImage = async (url) => {
     try {
