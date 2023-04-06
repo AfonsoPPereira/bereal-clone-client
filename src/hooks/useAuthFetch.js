@@ -38,7 +38,7 @@ export const useAuthFetch = () => {
         return await authFetchApi(
             '/feed',
             {
-                cache: cached ? 'force-cache' : 'reload'
+                cache: cached ? 'force-cache' : 'no-store'
             },
             { 400: () => appToast('Error fetching feed', 'error') }
         );
@@ -48,7 +48,7 @@ export const useAuthFetch = () => {
         return await authFetchApi(
             '/users',
             {
-                cache: cached ? 'force-cache' : 'reload'
+                cache: cached ? 'force-cache' : 'no-store'
             },
             { 400: () => appToast('Error fetching feed', 'error') }
         );
@@ -58,7 +58,7 @@ export const useAuthFetch = () => {
         return await authFetchApi(
             `/user/${username}`,
             {
-                cache: cached ? 'force-cache' : 'reload'
+                cache: cached ? 'force-cache' : 'no-store'
             },
             { 404: null }
         );
