@@ -5,7 +5,7 @@ import { appToast, fetchAuthApi, isInteger } from '../utils';
 
 export const useAuthFetch = () => {
     const [authUser, setAuthUser] = useContext(AuthUserContext);
-    const [cached, setCached] = useState(true);
+    const [cached, setCached] = useState(false);
     const cookies = useMemo(() => new Cookies(), []);
 
     const authFetchApi = async (url, options, handleErrorStatus = null) => {

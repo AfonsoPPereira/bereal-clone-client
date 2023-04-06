@@ -20,7 +20,7 @@ export default function Feed() {
     const { isFetching, refetch, dataUpdatedAt, data } = useQuery(['feed'], fetchLatestPhotos, {
         refetchOnWindowFocus: false,
         isDataEqual,
-        onSuccess: setUsers
+        onSuccess: (data) => setUsers(!Array.isArray(data) ? [] : data)
     });
 
     return (
