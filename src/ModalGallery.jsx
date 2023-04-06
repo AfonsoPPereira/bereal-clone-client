@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Modal } from '@mui/material';
 import { Box } from '@mui/system';
 import { useModalStore } from './store/store-modal';
-import DownloadImgButton from './components/DownloadImgButton';
+import GalleryModalButtons from './components/GalleryModalButtons';
 import ReactImageGallery from 'react-image-gallery';
 import { useUsersStore } from './store/store-users';
 import { useRef } from 'react';
@@ -30,22 +30,19 @@ export default function ModalGallery() {
                     const compressedPhotoURL = compressImg(photo.photoURL);
                     const compressedSecondaryPhotoURL = compressImg(photo.secondaryPhotoURL);
 
-                    return [
-                        {
-                            original: compressedPhotoURL,
-                            thumbnail: compressedPhotoURL,
-                            originalUrl: photo.photoURL,
-                            originalTitle: photo.caption,
-                            thumbnailTitle: photo.caption
-                        },
-                        {
-                            original: compressedSecondaryPhotoURL,
-                            thumbnail: compressedSecondaryPhotoURL,
-                            originalUrl: photo.secondaryPhotoURL,
-                            originalTitle: photo.caption,
-                            thumbnailTitle: photo.caption
-                        }
-                    ];
+                    return [{
+                        original: compressedPhotoURL,
+                        thumbnail: compressedPhotoURL,
+                        originalUrl: photo.photoURL,
+                        originalTitle: photo.caption,
+                        thumbnailTitle: photo.caption
+                    }, {
+                        original: compressedSecondaryPhotoURL,
+                        thumbnail: compressedSecondaryPhotoURL,
+                        originalUrl: photo.secondaryPhotoURL,
+                        originalTitle: photo.caption,
+                        thumbnailTitle: photo.caption
+                    }];
                 })
                 .flatMap((val) => val) ?? [],
         [photos]
@@ -82,7 +79,7 @@ export default function ModalGallery() {
                     ref={galleryRef}
                     startIndex={startIndex}
                     thumbnailPosition="left"
-                    renderCustomControls={() => <DownloadImgButton ref={galleryRef} />}
+                    renderCustomControls={() => <GalleryModalButtons ref={galleryRef} />}
                 />
             </Box>
         </Modal>
