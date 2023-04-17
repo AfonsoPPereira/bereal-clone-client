@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import PhotosByDate from './PhotosByDate';
-import IsFeed from './isFeed';
+import IsFeed from './IsFeed';
 
 Gallery.propTypes = {
     photos: PropTypes.array.isRequired
