@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
 import PlaceholderImg from './components/PlaceholderImg';
-import IsFeed from './isFeed';
+import IsFeed from './IsFeed';
 import { useModalStore } from './store/store-modal';
 import { compressImg, imgStyle } from './utils';
 
