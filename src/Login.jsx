@@ -1,6 +1,6 @@
 import ReactCodeInput from 'react-code-input';
 import Button from '@mui/material/Button';
-import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { appToast } from './utils';
@@ -17,10 +17,21 @@ export default function Login() {
 
     const [loading, setLoading] = useState(false);
     const [stage, setStage] = useState(0);
+    const [currentCountryCode, setCurrentCountryCode] = useState('');
 
     const keyInput = useRef(null);
     const phoneInput = useRef(null);
     const codeInput = useRef(null);
+
+    useEffect(() => {
+        const fetchAndSetCurrentCountryCode = async () => {
+            const data = await fetch('http://ip-api.com/json');
+            const countryCode = (await data?.json())?.countryCode?.toLowerCase() || '';
+            setCurrentCountryCode(countryCode);
+        };
+
+        fetchAndSetCurrentCountryCode();
+    }, []);
 
     const jumpStepsToStage = (step = 1) => setStage((state) => state + step);
 
@@ -69,14 +80,6 @@ export default function Login() {
 
         setLoading(false);
     };
-
-    const getCurrentLocale = useMemo(() => {
-        try {
-            return Intl.DateTimeFormat().resolvedOptions().locale.split('-').pop().toLowerCase();
-        } catch (error) {
-            return '';
-        }
-    }, []);
 
     const GoBackButton = () => {
         return (
@@ -130,7 +133,7 @@ export default function Login() {
                             autoComplete: 'on'
                         }}
                         placeholder="Enter phone number"
-                        country={getCurrentLocale}
+                        country={currentCountryCode}
                         enableSearch
                         countryCodeEditable={false}
                         onEnterKeyPress={() => {
@@ -149,7 +152,6 @@ export default function Login() {
     return (
         <form className="login-form" onSubmit={handleSubmitCode}>
             <div className="login-form-div">
-                <label>Insert code:</label>
                 <ReactCodeInput
                     autoFocus={true}
                     ref={codeInput}
